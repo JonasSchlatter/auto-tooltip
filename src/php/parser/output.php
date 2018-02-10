@@ -82,6 +82,8 @@ class OutputParser
     {
         global $dict;
 
+        $output = '';
+
         foreach ($dict as $entry => $value) {
             $output .= "$entry { \r\n";
 

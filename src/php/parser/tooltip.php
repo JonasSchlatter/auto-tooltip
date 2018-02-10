@@ -24,7 +24,7 @@ class TooltipParser
         $array[0] = trim($array[0]);
         $array[1] = trim($array[1]);
 
-        $output .= $this->translate('tag', $array[0]);
+        $output = $this->translate('tag', $array[0]);
         if (isset($array[1])) {
             $output .= ' ' . $this->translate($array[0], $array[1]);
         }
@@ -39,7 +39,7 @@ class TooltipParser
         $tooltips = array_map(array($this, 'parseTooltip'), $source);
 
         $index = 0;
-        $output .= '<span class="tooltip">[';
+        $output = '<span class="tooltip">[';
         foreach ($source as $src) {
             if ($index !== 0) {
                 $output .= ';';
