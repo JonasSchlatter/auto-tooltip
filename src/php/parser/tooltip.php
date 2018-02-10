@@ -42,18 +42,15 @@ class TooltipParser
         $tooltips = array_map(array($this, 'parseTooltip'), $source);
 
         $index = 0;
+        $output .= '<span class="tooltip">[';
         foreach ($source as $src)
         {
-            if ($index === 0)
-            {
-                $output .= '<span class="tooltip">[';
-            }
-            else 
+            if ($index !== 0)
             {
                 $output .= ';';
             }
-            $output .= $src;
 
+            $output .= $src;
             $index++;
         }
 

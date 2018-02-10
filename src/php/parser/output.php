@@ -80,11 +80,11 @@ class OutputParser
     {
         global $dict;
 
-        foreach ($dict as $entry=>$value)
+        foreach ($dict as $entry => $value)
         {
             $output .= "$entry { \r\n";
 
-            foreach ($value as $key=>$value)
+            foreach ($value as $key => $value)
             {
                 $output .= "    \"$key\": " . preg_replace('/\s\s+/', ' \r\n ', $value) . "\r\n";
             }

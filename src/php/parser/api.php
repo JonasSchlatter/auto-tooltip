@@ -5,7 +5,7 @@ function parser($buffer)
 {
     static $parser;
 
-    if ( is_null($parser) )
+    if (is_null($parser))
     {
         $parser = new OutputParser;
     }
