@@ -10,7 +10,7 @@ class OutputParser
         $this->input = "";
     }
 
-    private function catch_article($buffer)
+    private function catchArticle($buffer)
     {
         if (substr($buffer, 0, 9) == '%ARTICLE%')
         {
@@ -22,7 +22,7 @@ class OutputParser
         }
     }
 
-    private function add_anchors($matches)
+    private function addAnchors($matches)
     {
         static $counter = -1;
 
@@ -40,23 +40,23 @@ class OutputParser
         return $matches[0];
     }
 
-    private function add_anchors_to_h1($buffer)
+    private function addAnchorsToH1($buffer)
     {
         return preg_replace_callback(
             "/(<([^.]+)>)([^<]+)(<\\/\\2>)/s",
-            array($this, 'add_anchors'),
+            array($this, 'addAnchors'),
             $buffer
         );
     }
 
-    private function add_tooltips($buffer)
+    private function addTooltips($buffer)
     {
         $this->debug_log .= "Parsing tooltips...\r\n\r\n";
         $buffer = $this->tooltip_parser->parse($buffer);
         return $buffer;
     }
 
-    private function add_input($buffer)
+    private function addInput($buffer)
     {
         $this->debug_log .= "Buffer: replacing %OUTPUT% with input cache\r\n";
         $this->debug_log .= '>> ' . substr($this->input, 0, 20) . "[...]\r\n\r\n";
@@ -67,7 +67,7 @@ class OutputParser
         );
     }
 
-    private function print_debug_log($buffer)
+    private function printDebugLog($buffer)
     {
         return preg_replace(
             '/%DEBUG%/',
@@ -76,7 +76,7 @@ class OutputParser
         );
     }
 
-    private function print_dictionary($buffer)
+    private function printDictionary($buffer)
     {
         global $dict;
 
@@ -101,7 +101,7 @@ class OutputParser
         );
     }
 
-    private function print_input_log($buffer)
+    private function printInputLog($buffer)
     {
         $this->debug_log .= "Buffer: replacing %INPUT% with input cache\r\n";
         $this->debug_log .= '>> ' . substr($this->input, 0, 20) . "[...]\r\n\r\n";
@@ -114,18 +114,18 @@ class OutputParser
 
     public function parse($buffer)
     {
-        if ($this->catch_article($buffer))
+        if ($this->catchArticle($buffer))
         {
             return null;
         }
 
-        $buffer = $this->add_input($buffer);
-        $buffer = $this->add_anchors_to_h1($buffer);
-        $buffer = $this->add_tooltips($buffer);
+        $buffer = $this->addInput($buffer);
+        $buffer = $this->addAnchorsToH1($buffer);
+        $buffer = $this->addTooltips($buffer);
 
-        $buffer = $this->print_input_log($buffer);
-        $buffer = $this->print_dictionary($buffer);
-        $buffer = $this->print_debug_log($buffer);
+        $buffer = $this->printInputLog($buffer);
+        $buffer = $this->printDictionary($buffer);
+        $buffer = $this->printDebugLog($buffer);
 
         return $buffer;
     }
