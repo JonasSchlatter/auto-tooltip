@@ -7,13 +7,11 @@ class TooltipParser
     {
         global $dict;
 
-        if ($dict[$tag][$value])
-        {
+        if ($dict[$tag][$value]) {
             return $dict[$tag][$value];
         }
 
-        if ($dict[$tag]['*'])
-        {
+        if ($dict[$tag]['*']) {
             return $value . $dict[$tag]['*'];
         }
 
@@ -27,8 +25,7 @@ class TooltipParser
         $array[1] = trim($array[1]);
 
         $output .= $this->translate('tag', $array[0]);
-        if (isset($array[1]))
-        {
+        if (isset($array[1])) {
             $output .= ' ' . $this->translate($array[0], $array[1]);
         }
 
@@ -43,10 +40,8 @@ class TooltipParser
 
         $index = 0;
         $output .= '<span class="tooltip">[';
-        foreach ($source as $src)
-        {
-            if ($index !== 0)
-            {
+        foreach ($source as $src) {
+            if ($index !== 0) {
                 $output .= ';';
             }
 
@@ -55,8 +50,7 @@ class TooltipParser
         }
 
         $output .= ']<span class="tooltiptext">';
-        foreach ($tooltips as $tooltip)
-        {
+        foreach ($tooltips as $tooltip) {
             $output .= $tooltip . '<br><br>';
         }
         $output = substr($output, 0, -8);
@@ -67,8 +61,7 @@ class TooltipParser
 
     private function addTooltips($matches)
     {
-        if ($matches[2] === 'strong')
-        {
+        if ($matches[2] === 'strong') {
             $extendedContent = preg_replace_callback(
                 '/\[(?=[^[]*$)(.+?)]/s',
                 array($this, 'parseTooltips'),

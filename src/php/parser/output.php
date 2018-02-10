@@ -12,8 +12,7 @@ class OutputParser
 
     private function catchArticle($buffer)
     {
-        if (substr($buffer, 0, 9) == '%ARTICLE%')
-        {
+        if (substr($buffer, 0, 9) == '%ARTICLE%') {
             $this->debug_log .= "Adding article to input cache\r\n";
             $this->debug_log .= '<< "' . substr($buffer, 9, 20) . '[...]"' . "\r\n\r\n";
 
@@ -80,12 +79,10 @@ class OutputParser
     {
         global $dict;
 
-        foreach ($dict as $entry => $value)
-        {
+        foreach ($dict as $entry => $value) {
             $output .= "$entry { \r\n";
 
-            foreach ($value as $key => $value)
-            {
+            foreach ($value as $key => $value) {
                 $output .= "    \"$key\": " . preg_replace('/\s\s+/', ' \r\n ', $value) . "\r\n";
             }
 
@@ -114,8 +111,7 @@ class OutputParser
 
     public function parse($buffer)
     {
-        if ($this->catchArticle($buffer))
-        {
+        if ($this->catchArticle($buffer)) {
             return null;
         }
 
