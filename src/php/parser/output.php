@@ -3,15 +3,14 @@ namespace JMS\autotooltip;
 
 class OutputParser
 {
-    var $tooltipParser;
-    var $debugLog;
+    private $tooltipParser;
+    private $debugLog;
+    private $input;
+    private $newline = "[...]\r\n\r\n";
 
     public function __construct()
     {
         $this->tooltipParser = new TooltipParser;
-        $this->debugLog = "";
-        $this->input = "";
-        $this->newline = "[...]\r\n\r\n";
     }
 
     private function catchArticle($buffer)
