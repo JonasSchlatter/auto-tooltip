@@ -1,29 +1,11 @@
 <?php
-require './src/php/parser/main.php';
+require_once './src/php/parser/main.php';
 
-function parser($buffer)
-{
-    static $parser;
-    if (is_null($parser))
-    {
-        $parser = new Output_Parser;
-    }
+ob_start('\JMS\autotooltip\parser');
+require_once('./src/php/template/header.php');
+require_once('./src/php/template/content.php');
+require_once('./src/php/template/footer.php');
 
-    return $parser->parse($buffer);
-}
-
-function parse_article($buffer)
-{
-    return parser('%ARTICLE%' . $buffer);
-}
-
-ob_start("parser");
-require('./src/php/template/header.php');
-require('./src/php/template/content.php');
-require('./src/php/template/footer.php');
-
-ob_start("parse_article");
-require('article.php');
+ob_start('\JMS\autotooltip\parseArticle');
+require_once('article.php');
 ob_end_clean();
-
-require './src/php/parser/dict.php';

@@ -1,5 +1,7 @@
 <?php
-class Tooltip_Parser
+namespace JMS\autotooltip;
+
+class TooltipParser
 {
     private function translate($tag, $value)
     {
@@ -10,14 +12,15 @@ class Tooltip_Parser
             return $dict[$tag][$value];
         }
 
-        if ($dict[$tag]["*"])
+        if ($dict[$tag]['*'])
         {
             return $value . $dict[$tag]['*'];
         }
+
         return $value;
     }
 
-    private function parse_tooltip($tooltip)
+    private function parseTooltip($tooltip)
     {
         $array = explode('=', $tooltip);
         $array[0] = trim($array[0]);
@@ -32,16 +35,16 @@ class Tooltip_Parser
         return $output;
     }
 
-    private function parse_tooltips($tt_code)
+    private function parseTooltips($toolTipSource)
     {
-        $source = explode(';', $tt_code[1]);
+        $source = explode(';', $toolTipSource[1]);
         $source = array_filter($source);
-        $tooltips = array_map(array($this, 'parse_tooltip'), $source);
+        $tooltips = array_map(array($this, 'parseTooltip'), $source);
 
-        $i = 0;
+        $index = 0;
         foreach ($source as $src)
         {
-            if ($i === 0)
+            if ($index === 0)
             {
                 $output .= '<span class="tooltip">[';
             }
@@ -51,7 +54,7 @@ class Tooltip_Parser
             }
             $output .= $src;
 
-            $i++;
+            $index++;
         }
 
         $output .= ']<span class="tooltiptext">';
@@ -65,28 +68,17 @@ class Tooltip_Parser
         return $output;
     }
 
-    private function add_tooltip($matches)
+    private function addTooltips($matches)
     {
-        if ($matches[2] === "strong")
+        if ($matches[2] === 'strong')
         {
-            $tag_start = strpos($matches[3], '[');
-            if ($tag_start === false)
-            {
-                return $matches[0];
-            }
+            $extendedContent = preg_replace_callback(
+                '/\[(?=[^[]*$)(.+?)]/s',
+                array($this, 'parseTooltips'),
+                $matches[3]
+            );
 
-            $tag_end = strpos($matches[3], ']') - $tag_start;
-
-            if ($tag_end)
-            {
-                $ttip = preg_replace_callback(
-                    "/\[(?=[^[]*$)(.+?)]/s",
-                    array($this, 'parse_tooltips'),
-                    $matches[3]
-                );
-
-                return "<$matches[2]>$ttip$matches[4]";
-            }
+            return "<$matches[2]>$extendedContent$matches[4]";
         }
 
         return $matches[0];
@@ -95,8 +87,8 @@ class Tooltip_Parser
     public function parse($buffer)
     {
         return preg_replace_callback(
-            "/(<([^.]+)>)([^<]+)(<\\/\\2>)/s",
-            array($this, 'add_tooltip'),
+            '/(<([^.]+)>)([^<]+)(<\\/\\2>)/s',
+            array($this, 'addTooltips'),
             $buffer
         );
     }
