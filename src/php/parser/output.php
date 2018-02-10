@@ -3,18 +3,22 @@ namespace JMS\autotooltip;
 
 class OutputParser
 {
+    var $tooltipParser;
+    var $debugLog;
+
     public function __construct()
     {
-        $this->tooltip_parser = new TooltipParser;
-        $this->debug_log = "";
+        $this->tooltipParser = new TooltipParser;
+        $this->debugLog = "";
         $this->input = "";
+        $this->newline = "[...]\r\n\r\n";
     }
 
     private function catchArticle($buffer)
     {
         if (substr($buffer, 0, 9) == '%ARTICLE%') {
-            $this->debug_log .= "Adding article to input cache\r\n";
-            $this->debug_log .= '<< "' . substr($buffer, 9, 20) . '[...]"' . "\r\n\r\n";
+            $this->debugLog .= "Adding article to input cache\r\n";
+            $this->debugLog .= '<< "' . substr($buffer, 9, 20) . $this->newline;
 
             $this->input .= substr($buffer, 9);
             return true;
@@ -29,8 +33,8 @@ class OutputParser
             global $dict;
             $counter++;
 
-            $this->debug_log .= "Buffer: Adding anchor to \"$matches[0]\"\r\n";
-            $this->debug_log .= '>> <a id="' . $dict["h1"][$counter] . "\" class=\"offsetAnchor\"></a>\r\n\r\n";
+            $this->debugLog .= "Buffer: Adding anchor to \"$matches[0]\"\r\n";
+            $this->debugLog .= '>> <a id="' . $dict["h1"][$counter] . "\" class=\"offsetAnchor\"></a>\r\n\r\n";
 
             return '<a id="' . $dict["h1"][$counter] . "\" class=\"offsetAnchor\"></a>
         $matches[0]\r\n";
@@ -50,15 +54,15 @@ class OutputParser
 
     private function addTooltips($buffer)
     {
-        $this->debug_log .= "Parsing tooltips...\r\n\r\n";
-        $buffer = $this->tooltip_parser->parse($buffer);
+        $this->debugLog .= "Parsing tooltips...\r\n\r\n";
+        $buffer = $this->tooltipParser->parse($buffer);
         return $buffer;
     }
 
     private function addInput($buffer)
     {
-        $this->debug_log .= "Buffer: replacing %OUTPUT% with input cache\r\n";
-        $this->debug_log .= '>> ' . substr($this->input, 0, 20) . "[...]\r\n\r\n";
+        $this->debugLog .= "Buffer: replacing %OUTPUT% with input cache\r\n";
+        $this->debugLog .= '>> ' . substr($this->input, 0, 20) . $this->newline;
         return preg_replace(
             '/%OUTPUT%/',
             substr($this->input, 0, -1) . "\r\n",
@@ -70,7 +74,7 @@ class OutputParser
     {
         return preg_replace(
             '/%DEBUG%/',
-            htmlspecialchars(substr($this->debug_log, 0) . "Done. ツ"),
+            htmlspecialchars(substr($this->debugLog, 0) . "Done. ツ"),
             $buffer
         );
     }
@@ -89,8 +93,8 @@ class OutputParser
             $output .= "}\r\n\r\n";
         }
 
-        $this->debug_log .= "Buffer: replacing %DICT% with dict.php\r\n";
-        $this->debug_log .= '>> ' . substr($output, 0, strpos($output, "\r\n")) . "[...]\r\n\r\n";
+        $this->debugLog .= "Buffer: replacing %DICT% with dict.php\r\n";
+        $this->debugLog .= '>> ' . substr($output, 0, strpos($output, "\r\n")) . $this->newline;
         return preg_replace(
             '/%DICT%/',
             $output,
@@ -100,8 +104,8 @@ class OutputParser
 
     private function printInputLog($buffer)
     {
-        $this->debug_log .= "Buffer: replacing %INPUT% with input cache\r\n";
-        $this->debug_log .= '>> ' . substr($this->input, 0, 20) . "[...]\r\n\r\n";
+        $this->debugLog .= "Buffer: replacing %INPUT% with input cache\r\n";
+        $this->debugLog .= '>> ' . substr($this->input, 0, 20) . $this->newline;
         return preg_replace(
             '/%INPUT%/',
             htmlspecialchars(substr($this->input, 0, -1)) . "\r\n",
